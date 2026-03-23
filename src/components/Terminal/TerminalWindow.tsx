@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { Terminal } from '@xterm/xterm'
 import { FitAddon } from '@xterm/addon-fit'
 import { WebLinksAddon } from '@xterm/addon-web-links'
 import { parseAndRun, getCompletions } from '../../commands'
 import { prompt } from '../../utils/formatOutput'
-import { getCwd } from '../../commands/systemCommands'
+import { getCwd, addToHistory } from '../../commands/systemCommands'
 import { AppId } from '../../types'
 import '@xterm/xterm/css/xterm.css'
 import './TerminalWindow.css'
@@ -68,7 +68,7 @@ export function TerminalWindow({ onOpenWindow, onEasterEgg }: Props) {
       '\r\n\x1b[38;2;0;255;70m' +
       '  ____  _           _     ____        _    \r\n' +
       ' / ___|| | __ _ ___| |__ |  _ \\  ___ | |_  \r\n' +
-      ' \\___ \\| |/ _` / __| \'_ \\| | | |/ _ \\| __| \r\n' +
+      ' \\___ \\| |/ _` / __| \'_  \\| | | |/ _ \\| __| \r\n' +
       '  ___) | | (_| \\__ \\ | | | |_| | (_) | |_  \r\n' +
       ' |____/|_|\\__,_|___/_| |_|____/ \\___/ \\__| \r\n' +
       '\x1b[0m',
@@ -82,7 +82,6 @@ export function TerminalWindow({ onOpenWindow, onEasterEgg }: Props) {
     welcomeLines.forEach(l => term.writeln(l))
     term.write(prompt(getCwd()))
 
-    // Input handling
     term.onKey(({ key, domEvent }) => {
       const code = domEvent.keyCode
 
@@ -91,7 +90,9 @@ export function TerminalWindow({ onOpenWindow, onEasterEgg }: Props) {
         const input = inputRef.current.trim()
         term.writeln('')
         if (input) {
+          // Add to both local history (for up/down arrows) and global history (for history command)
           historyRef.current.unshift(input)
+          addToHistory(input)
           histIdxRef.current = -1
           const result = parseAndRun(input)
           if (result.output) term.write(result.output)
@@ -123,7 +124,6 @@ export function TerminalWindow({ onOpenWindow, onEasterEgg }: Props) {
       if (code === 38) {
         const newIdx = Math.min(histIdxRef.current + 1, historyRef.current.length - 1)
         if (historyRef.current[newIdx] !== undefined) {
-          // Clear current line
           term.write('\r' + prompt(getCwd()) + ' '.repeat(inputRef.current.length) + '\r' + prompt(getCwd()))
           histIdxRef.current = newIdx
           inputRef.current = historyRef.current[newIdx]
@@ -186,7 +186,6 @@ export function TerminalWindow({ onOpenWindow, onEasterEgg }: Props) {
       }
     })
 
-    // Resize observer
     const ro = new ResizeObserver(() => fitAddon.fit())
     ro.observe(containerRef.current)
 

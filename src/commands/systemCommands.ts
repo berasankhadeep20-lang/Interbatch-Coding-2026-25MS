@@ -1,13 +1,15 @@
-import { CommandHandler } from '../types'
+import { CommandHandler, CommandResult } from '../types'
 import { c, formatTable, formatHeader, formatSection, formatError } from '../utils/formatOutput'
 import { filesystem, fileContents } from '../data/filesystem'
 
 let cwd = '/home/slashdot'
+const commandHistory: string[] = []
 
 export function getCwd() { return cwd }
+export function addToHistory(cmd: string) { commandHistory.unshift(cmd) }
 
 export const systemCommands: Record<string, CommandHandler> = {
-  help: () => ({
+  help: (): CommandResult => ({
     output: [
       '',
       formatHeader('SlashDot OS — Command Reference'),
@@ -30,20 +32,24 @@ export const systemCommands: Record<string, CommandHandler> = {
         `${c.yellow}whoami${c.reset}               ${c.gray}Current user info${c.reset}`,
         `${c.yellow}uname -a${c.reset}             ${c.gray}OS information${c.reset}`,
         `${c.yellow}date${c.reset}                 ${c.gray}Current date/time${c.reset}`,
-        `${c.yellow}clear${c.reset}                ${c.gray}Clear terminal${c.reset}`,
         `${c.yellow}history${c.reset}              ${c.gray}Command history${c.reset}`,
+        `${c.yellow}ping <host>${c.reset}          ${c.gray}Ping a host${c.reset}`,
+        `${c.yellow}clear${c.reset}                ${c.gray}Clear terminal${c.reset}`,
       ]),
       formatSection('Easter Eggs', [
         `${c.magenta}sudo party${c.reset}           ${c.gray}???${c.reset}`,
         `${c.magenta}matrix${c.reset}               ${c.gray}???${c.reset}`,
+        `${c.magenta}vim <file>${c.reset}           ${c.gray}???${c.reset}`,
+        `${c.magenta}apt install <pkg>${c.reset}    ${c.gray}???${c.reset}`,
         `${c.magenta}cowsay <text>${c.reset}        ${c.gray}???${c.reset}`,
         `${c.magenta}sl${c.reset}                   ${c.gray}???${c.reset}`,
+        `${c.magenta}fortune${c.reset}              ${c.gray}???${c.reset}`,
       ]),
       '',
     ].join('\r\n'),
   }),
 
-  ls: (args) => {
+  ls: (args: string[]): CommandResult => {
     const path = args[0]
       ? (args[0].startsWith('/') ? args[0] : `${cwd}/${args[0]}`.replace('//', '/'))
       : cwd
@@ -61,7 +67,7 @@ export const systemCommands: Record<string, CommandHandler> = {
     return { output: '\r\n' + formatted.join('    ') + '\r\n' }
   },
 
-  cd: (args) => {
+  cd: (args: string[]): CommandResult => {
     if (!args[0] || args[0] === '~') {
       cwd = '/home/slashdot'
       return { output: '' }
@@ -78,9 +84,9 @@ export const systemCommands: Record<string, CommandHandler> = {
     return { output: formatError(`cd: ${args[0]}: No such file or directory`) }
   },
 
-  pwd: () => ({ output: `\r\n${c.yellow}${cwd}${c.reset}\r\n` }),
+  pwd: (): CommandResult => ({ output: `\r\n${c.yellow}${cwd}${c.reset}\r\n` }),
 
-  cat: (args) => {
+  cat: (args: string[]): CommandResult => {
     if (!args[0]) return { output: formatError('cat: missing file operand') }
     const path = args[0].startsWith('/')
       ? args[0]
@@ -90,7 +96,7 @@ export const systemCommands: Record<string, CommandHandler> = {
     return { output: `\r\n${c.white}${content}${c.reset}\r\n` }
   },
 
-  whoami: () => ({
+  whoami: (): CommandResult => ({
     output: [
       '',
       formatTable([
@@ -104,7 +110,7 @@ export const systemCommands: Record<string, CommandHandler> = {
     ].join('\r\n'),
   }),
 
-  'uname': (args) => {
+  uname: (args: string[]): CommandResult => {
     const all = args.includes('-a')
     return {
       output: all
@@ -113,7 +119,65 @@ export const systemCommands: Record<string, CommandHandler> = {
     }
   },
 
-  date: () => ({
+  date: (): CommandResult => ({
     output: `\r\n${c.yellow}${new Date().toString()}${c.reset}\r\n`,
   }),
+
+  // ── HISTORY ─────────────────────────────────────────────────────────────────
+  history: (): CommandResult => {
+  const hist = (window as any).__slashdotHistory as string[] ?? []
+  if (hist.length === 0) {
+    return { output: `\r\n${c.gray}No commands in history yet.${c.reset}\r\n` }
+  }
+  return {
+    output: [
+      '',
+      ...hist
+        .slice()
+        .reverse()
+        .map((cmd: string, i: number) =>
+          `  ${c.gray}${String(i + 1).padStart(3)}${c.reset}  ${c.white}${cmd}${c.reset}`
+        ),
+      '',
+    ].join('\r\n'),
+  }
+},
+
+  // ── PING ────────────────────────────────────────────────────────────────────
+  ping: (args: string[]): CommandResult => {
+    const host = args[0] || 'slashdot.iiserkol.ac.in'
+
+    const knownHosts: Record<string, string> = {
+      'slashdot.iiserkol.ac.in': '10.0.0.1',
+      'slashdot':                '10.0.0.1',
+      'iiserkol.ac.in':          '10.0.0.2',
+      'iiser':                   '10.0.0.2',
+      'localhost':               '127.0.0.1',
+      '127.0.0.1':               '127.0.0.1',
+      'google.com':              '142.250.195.46',
+      'github.com':              '140.82.121.4',
+    }
+
+    const ip = knownHosts[host.toLowerCase()] ?? '192.168.1.1'
+
+    const times = Array.from({ length: 4 }, () =>
+      (Math.random() * 2 + 0.2).toFixed(3)
+    )
+    const avg = (times.reduce((a, b) => a + parseFloat(b), 0) / times.length).toFixed(3)
+
+    return {
+      output: [
+        '',
+        `${c.cyan}PING ${host} (${ip}) 56(84) bytes of data.${c.reset}`,
+        ...times.map((t, i) =>
+          `${c.white}64 bytes from ${ip}: icmp_seq=${i + 1} ttl=64 time=${t} ms${c.reset}`
+        ),
+        '',
+        `${c.gray}--- ${host} ping statistics ---${c.reset}`,
+        `${c.white}4 packets transmitted, 4 received, ${c.green}0% packet loss${c.reset}`,
+        `${c.white}rtt min/avg/max = ${Math.min(...times.map(Number)).toFixed(3)}/${avg}/${Math.max(...times.map(Number)).toFixed(3)} ms${c.reset}`,
+        '',
+      ].join('\r\n'),
+    }
+  },
 }
