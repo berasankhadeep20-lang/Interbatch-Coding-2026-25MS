@@ -1,0 +1,185 @@
+.desktop {
+  width: 100vw;
+  height: 100vh;
+  background: #050505;
+  position: relative;
+  overflow: hidden;
+  /* Subtle grid pattern */
+  background-image:
+    linear-gradient(rgba(0,255,70,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,70,0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* CRT scanline effect */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 9000;
+}
+
+/* Desktop icons column on the left */
+.desktop-icons {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1;
+}
+
+.desktop-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #ddd;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  width: 64px;
+  transition: all 0.12s;
+}
+
+.desktop-icon:hover {
+  background: rgba(0,255,70,0.05);
+  border-color: rgba(0,255,70,0.2);
+}
+
+.desktop-icon:active {
+  background: rgba(0,255,70,0.1);
+}
+
+.desktop-icon-glyph {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.desktop-icon-label {
+  font-size: 10px;
+  color: #aaa;
+  text-align: center;
+  text-shadow: 0 1px 4px #000;
+  word-break: break-word;
+}
+
+/* Taskbar */
+.taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 36px;
+  background: rgba(10, 10, 10, 0.95);
+  border-top: 1px solid #1a1a1a;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  gap: 8px;
+  z-index: 8000;
+  backdrop-filter: blur(8px);
+}
+
+.taskbar-left { flex-shrink: 0; }
+
+.taskbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: #111;
+  border: 1px solid #00ff4630;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  transition: all 0.12s;
+}
+
+.taskbar-logo:hover {
+  background: #161616;
+  border-color: #00ff4660;
+}
+
+.taskbar-logo-text {
+  font-size: 12px;
+  font-weight: 700;
+  color: #00ff46;
+}
+
+.taskbar-logo-badge {
+  font-size: 9px;
+  background: #00ff4620;
+  color: #00ff46;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.taskbar-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.taskbar-item {
+  padding: 3px 12px;
+  background: #161616;
+  border: 1px solid #222;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #888;
+  white-space: nowrap;
+  transition: all 0.1s;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.taskbar-item:hover { border-color: #333; color: #bbb; }
+
+.taskbar-item.active {
+  background: #111;
+  border-color: #00ff4640;
+  color: #00ff46;
+}
+
+.taskbar-item.minimized {
+  opacity: 0.5;
+  border-style: dashed;
+}
+
+.taskbar-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+  gap: 1px;
+}
+
+.taskbar-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.taskbar-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #555;
+}

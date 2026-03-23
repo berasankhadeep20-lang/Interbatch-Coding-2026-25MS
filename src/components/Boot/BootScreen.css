@@ -1,0 +1,99 @@
+.boot-screen {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.bios {
+  gap: 12px;
+}
+
+.bios-ascii {
+  color: #00ff46;
+  font-size: clamp(8px, 1.2vw, 14px);
+  line-height: 1.2;
+  text-align: center;
+  text-shadow: 0 0 8px #00ff4660;
+  animation: flicker 4s infinite;
+}
+
+.bios-subtitle {
+  color: #00c8ff;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+}
+
+.bios-sub {
+  color: #888;
+  font-size: 12px;
+}
+
+.bios-bar {
+  width: 320px;
+  height: 4px;
+  background: #1a1a1a;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 16px;
+}
+
+.bios-bar-fill {
+  height: 100%;
+  background: #00ff46;
+  border-radius: 2px;
+  animation: loadbar 1.1s ease-out forwards;
+  box-shadow: 0 0 8px #00ff4680;
+}
+
+.bios-hint {
+  color: #555;
+  font-size: 11px;
+  margin-top: 8px;
+  animation: blink 1s step-end infinite;
+}
+
+.boot-log {
+  justify-content: flex-start;
+  padding: 24px 32px;
+}
+
+.boot-lines {
+  color: #aaa;
+  font-size: 12px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  width: 100%;
+  max-width: 700px;
+}
+
+.boot-line:last-of-type {
+  color: #00ff46;
+}
+
+.cursor {
+  color: #00ff46;
+  animation: blink 0.8s step-end infinite;
+  font-size: 12px;
+}
+
+@keyframes loadbar {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@keyframes flicker {
+  0%, 95%, 100% { opacity: 1; }
+  96% { opacity: 0.85; }
+  97% { opacity: 1; }
+  98% { opacity: 0.9; }
+}
