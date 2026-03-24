@@ -98,7 +98,6 @@ export const easterEggs: Record<string, CommandHandler> = {
   // ── VIM ─────────────────────────────────────────────────────────────────────
   vim: (args: string[]): CommandResult => {
     const file = args[0] || 'untitled'
-
     const fileContents: Record<string, string[]> = {
       'about.txt': [
         '# SlashDot OS — About',
@@ -121,9 +120,7 @@ export const easterEggs: Record<string, CommandHandler> = {
       ],
       'untitled': [''],
     }
-
     const lines = fileContents[file] ?? [`"${file}" [New File]`]
-
     return {
       output: [
         '',
@@ -164,7 +161,6 @@ export const easterEggs: Record<string, CommandHandler> = {
   apt: (args: string[]): CommandResult => {
     const subcommand = args[0]
     const pkg = args[1] || ''
-
     if (subcommand !== 'install') {
       return {
         output: [
@@ -175,7 +171,6 @@ export const easterEggs: Record<string, CommandHandler> = {
         ].join('\r\n'),
       }
     }
-
     const funPackages: Record<string, string[]> = {
       friendship: [
         `${c.green}✓ Successfully installed: friendship (1.0.0-25ms)${c.reset}`,
@@ -219,7 +214,6 @@ export const easterEggs: Record<string, CommandHandler> = {
         `${c.gray}Note: This is still fake. Please use your real terminal.${c.reset}`,
       ],
     }
-
     const progressBar = (pkg: string) => [
       '',
       `${c.cyan}Reading package lists...${c.reset} Done`,
@@ -239,9 +233,7 @@ export const easterEggs: Record<string, CommandHandler> = {
       `${c.white}Setting up ${pkg} (1.0.0) ...${c.reset}`,
       `${c.white}Processing triggers for slashdot-os...${c.reset}`,
     ]
-
     const extras = funPackages[pkg.toLowerCase()]
-
     return {
       output: [
         ...progressBar(pkg || 'unknown'),
@@ -249,6 +241,76 @@ export const easterEggs: Record<string, CommandHandler> = {
           `${c.green}✓ Successfully installed: ${pkg}${c.reset}`,
           `${c.gray}(This is a fake OS — nothing was actually installed)${c.reset}`,
         ]),
+        '',
+      ].join('\r\n'),
+    }
+  },
+
+  // ── SSH ─────────────────────────────────────────────────────────────────────
+  ssh: (args: string[]): CommandResult => {
+    const target = args[0] || ''
+    const isIISER = target.includes('iiserkol') || target.includes('iiser') || target.includes('25ms')
+
+    if (!isIISER) {
+      return {
+        output: [
+          '',
+          `${c.cyan}ssh: connecting to ${target}...${c.reset}`,
+          `${c.red}ssh: connect to host ${target} port 22: Connection refused${c.reset}`,
+          `${c.gray}Hint: Try 'ssh batch@iiserkol'${c.reset}`,
+          '',
+        ].join('\r\n'),
+      }
+    }
+
+    return {
+      output: [
+        '',
+        `${c.cyan}ssh: connecting to ${target}...${c.reset}`,
+        `${c.gray}The authenticity of host 'iiserkol.ac.in (10.0.0.2)' can't be established.${c.reset}`,
+        `${c.gray}ECDSA key fingerprint is SHA256:25MS/SlashDotOS/2026/IISERKOL.${c.reset}`,
+        `${c.yellow}Are you sure you want to continue connecting? (yes/no) yes${c.reset}`,
+        `${c.green}Warning: Permanently added 'iiserkol.ac.in' to the list of known hosts.${c.reset}`,
+        '',
+        `${c.green}Connected to IISER Kolkata Internal Network${c.reset}`,
+        `${c.gray}─────────────────────────────────────────────${c.reset}`,
+        '',
+        `${c.cyan}  ██╗██╗███████╗███████╗██████╗ ${c.reset}`,
+        `${c.cyan}  ██║██║██╔════╝██╔════╝██╔══██╗${c.reset}`,
+        `${c.cyan}  ██║██║███████╗█████╗  ██████╔╝${c.reset}`,
+        `${c.cyan}  ██║██║╚════██║██╔══╝  ██╔══██╗${c.reset}`,
+        `${c.cyan}  ██║██║███████║███████╗██║  ██║${c.reset}`,
+        `${c.cyan}  ╚═╝╚═╝╚══════╝╚══════╝╚═╝  ╚═╝${c.reset}`,
+        `${c.cyan}  KOLKATA${c.reset}`,
+        '',
+        `${c.gray}─────────────────────────────────────────────${c.reset}`,
+        `${c.white}Last login: Sat Apr 11 23:59:59 2026${c.reset}`,
+        '',
+        `${c.yellow}  Welcome, 25MS Batch!${c.reset}`,
+        `${c.gray}  You have accessed the IISER Kolkata internal server.${c.reset}`,
+        '',
+        `${c.white}  ── 25MS Batch Stats ──────────────────────${c.reset}`,
+        `${c.cyan}  Students enrolled   ${c.reset}${c.white}:  ~150${c.reset}`,
+        `${c.cyan}  Courses completed   ${c.reset}${c.white}:  6 semesters${c.reset}`,
+        `${c.cyan}  Avg sleep per night ${c.reset}${c.white}:  4.2 hours${c.reset}`,
+        `${c.cyan}  Coffee consumed     ${c.reset}${c.white}:  ∞ litres${c.reset}`,
+        `${c.cyan}  Assignments pending ${c.reset}${c.white}:  always${c.reset}`,
+        `${c.cyan}  Bugs fixed today    ${c.reset}${c.white}:  3 (introduced 7)${c.reset}`,
+        `${c.cyan}  SlashDot members    ${c.reset}${c.white}:  the coolest ones${c.reset}`,
+        '',
+        `${c.white}  ── Upcoming Events ───────────────────────${c.reset}`,
+        `${c.green}  ★ Inter-Batch Web Dev Competition 2026${c.reset}`,
+        `${c.gray}    Submission deadline: April 11, 2026${c.reset}`,
+        `${c.green}  ★ SlashDot Hackathon — coming soon${c.reset}`,
+        `${c.green}  ★ End semester exams — pray for us${c.reset}`,
+        '',
+        `${c.white}  ── Message of the Day ────────────────────${c.reset}`,
+        `${c.yellow}  "We didn't sleep, we deployed."${c.reset}`,
+        `${c.gray}              — 25MS Batch, 2026${c.reset}`,
+        '',
+        `${c.gray}─────────────────────────────────────────────${c.reset}`,
+        `${c.green}batch@iiserkol:~$${c.reset} ${c.gray}exit${c.reset}`,
+        `${c.cyan}Connection to iiserkol.ac.in closed.${c.reset}`,
         '',
       ].join('\r\n'),
     }

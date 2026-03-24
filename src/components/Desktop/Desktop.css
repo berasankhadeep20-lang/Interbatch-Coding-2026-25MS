@@ -253,3 +253,22 @@
   text-align: center;
   flex-shrink: 0;
 }
+.mute-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 6px;
+  transition: all 0.1s;
+  line-height: 1;
+}
+
+.mute-btn:hover {
+  border-color: #333;
+  background: #161616;
+}
+
+.mute-btn.muted {
+  opacity: 0.5;
+}

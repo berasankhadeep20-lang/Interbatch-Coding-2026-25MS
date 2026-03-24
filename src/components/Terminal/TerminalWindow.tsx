@@ -4,8 +4,9 @@ import { FitAddon } from '@xterm/addon-fit'
 import { WebLinksAddon } from '@xterm/addon-web-links'
 import { parseAndRun, getCompletions } from '../../commands'
 import { prompt } from '../../utils/formatOutput'
-import { getCwd, addToHistory } from '../../commands/systemCommands'
+import { getCwd } from '../../commands/systemCommands'
 import { AppId } from '../../types'
+import { playKeyClick, playEnter } from '../../utils/sounds'
 import '@xterm/xterm/css/xterm.css'
 import './TerminalWindow.css'
 
@@ -63,12 +64,11 @@ export function TerminalWindow({ onOpenWindow, onEasterEgg }: Props) {
     termRef.current = term
     fitAddonRef.current = fitAddon
 
-    // Welcome banner
     const welcomeLines = [
       '\r\n\x1b[38;2;0;255;70m' +
       '  ____  _           _     ____        _    \r\n' +
       ' / ___|| | __ _ ___| |__ |  _ \\  ___ | |_  \r\n' +
-      ' \\___ \\| |/ _` / __| \'_  \\| | | |/ _ \\| __| \r\n' +
+      ' \\___ \\| |/ _` / __| \'_ \\| | | |/ _ \\| __| \r\n' +
       '  ___) | | (_| \\__ \\ | | | |_| | (_) | |_  \r\n' +
       ' |____/|_|\\__,_|___/_| |_|____/ \\___/ \\__| \r\n' +
       '\x1b[0m',
@@ -79,21 +79,20 @@ export function TerminalWindow({ onOpenWindow, onEasterEgg }: Props) {
       "\x1b[38;2;120;120;120m  Type 'open home' to launch the homepage app.\x1b[0m",
       '',
     ]
-    welcomeLines.forEach(l => term.writeln(l))
+    welcomeLines.forEach(function(l) { term.writeln(l) })
     term.write(prompt(getCwd()))
 
-    term.onKey(({ key, domEvent }) => {
+    term.onKey(function({ key, domEvent }) {
       const code = domEvent.keyCode
 
-      // Enter
       if (code === 13) {
+        playEnter()
         const input = inputRef.current.trim()
         term.writeln('')
         if (input) {
-          // Add to both local history (for up/down arrows) and global history (for history command)
           historyRef.current.unshift(input)
-          addToHistory(input)
           histIdxRef.current = -1
+          ;(window as any).__slashdotHistory = historyRef.current
           const result = parseAndRun(input)
           if (result.output) term.write(result.output)
           if (result.action) {
@@ -111,16 +110,15 @@ export function TerminalWindow({ onOpenWindow, onEasterEgg }: Props) {
         return
       }
 
-      // Backspace
       if (code === 8) {
         if (inputRef.current.length > 0) {
           inputRef.current = inputRef.current.slice(0, -1)
           term.write('\b \b')
+          playKeyClick()
         }
         return
       }
 
-      // Up arrow — history
       if (code === 38) {
         const newIdx = Math.min(histIdxRef.current + 1, historyRef.current.length - 1)
         if (historyRef.current[newIdx] !== undefined) {
@@ -132,7 +130,6 @@ export function TerminalWindow({ onOpenWindow, onEasterEgg }: Props) {
         return
       }
 
-      // Down arrow — history
       if (code === 40) {
         const newIdx = histIdxRef.current - 1
         term.write('\r' + prompt(getCwd()) + ' '.repeat(inputRef.current.length) + '\r' + prompt(getCwd()))
@@ -147,7 +144,6 @@ export function TerminalWindow({ onOpenWindow, onEasterEgg }: Props) {
         return
       }
 
-      // Tab — autocomplete
       if (code === 9) {
         domEvent.preventDefault()
         const completions = getCompletions(inputRef.current)
@@ -163,7 +159,6 @@ export function TerminalWindow({ onOpenWindow, onEasterEgg }: Props) {
         return
       }
 
-      // Ctrl+C
       if (domEvent.ctrlKey && domEvent.key === 'c') {
         term.writeln('^C')
         inputRef.current = ''
@@ -171,7 +166,6 @@ export function TerminalWindow({ onOpenWindow, onEasterEgg }: Props) {
         return
       }
 
-      // Ctrl+L — clear
       if (domEvent.ctrlKey && domEvent.key === 'l') {
         term.clear()
         term.write(prompt(getCwd()))
@@ -179,17 +173,17 @@ export function TerminalWindow({ onOpenWindow, onEasterEgg }: Props) {
         return
       }
 
-      // Regular printable characters
       if (!domEvent.ctrlKey && !domEvent.altKey && key.length === 1) {
         inputRef.current += key
         term.write(key)
+        playKeyClick()
       }
     })
 
-    const ro = new ResizeObserver(() => fitAddon.fit())
+    const ro = new ResizeObserver(function() { fitAddon.fit() })
     ro.observe(containerRef.current)
 
-    return () => {
+    return function() {
       ro.disconnect()
       term.dispose()
     }
