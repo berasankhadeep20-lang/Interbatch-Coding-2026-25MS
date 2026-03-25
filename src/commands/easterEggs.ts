@@ -246,6 +246,41 @@ export const easterEggs: Record<string, CommandHandler> = {
     }
   },
 
+  // ── MEMBERS ─────────────────────────────────────────────────────────────────
+  members: (): CommandResult => ({
+    output: [
+      '',
+      `${c.cyan}┌─────────────────────────────────────────────────┐${c.reset}`,
+      `${c.cyan}│         SlashDot Club — Office Bearers          │${c.reset}`,
+      `${c.cyan}│      Programming & Design Club, IISER Kolkata   │${c.reset}`,
+      `${c.cyan}└─────────────────────────────────────────────────┘${c.reset}`,
+      '',
+      `${c.yellow}// Current Office Bearers${c.reset}`,
+      '',
+      `  ${c.green}[01]${c.reset} ${c.white}Shuvam Banerji Seal${c.reset}`,
+      `       ${c.gray}✉  sbs22ms076@iiserkol.ac.in${c.reset}`,
+      `       ${c.cyan}⚑  22MS Batch${c.reset}`,
+      '',
+      `  ${c.green}[02]${c.reset} ${c.white}Anuprovo Debnath${c.reset}`,
+      `       ${c.gray}✉  ad23ms110@iiserkol.ac.in${c.reset}`,
+      `       ${c.cyan}⚑  23MS Batch${c.reset}`,
+      '',
+      `  ${c.green}[03]${c.reset} ${c.white}Abhinav Dhingra${c.reset}`,
+      `       ${c.gray}✉  ad24ms110@iiserkol.ac.in${c.reset}`,
+      `       ${c.cyan}⚑  24MS Batch${c.reset}`,
+      '',
+      `${c.gray}─────────────────────────────────────────────────────${c.reset}`,
+      `${c.yellow}// Competition Entry${c.reset}`,
+      '',
+      `  ${c.green}[04]${c.reset} ${c.white}Sankhadeep Bera${c.reset}`,
+      `       ${c.gray}✉  berasankhadeep20-lang@github${c.reset}`,
+      `       ${c.cyan}⚑  25MS Batch — SlashDot OS Developer${c.reset}`,
+      '',
+      `${c.gray}Type 'open team' to see the full 25MS team.${c.reset}`,
+      '',
+    ].join('\r\n'),
+  }),
+
   // ── WEATHER ─────────────────────────────────────────────────────────────────
 
   weather: (): CommandResult => {

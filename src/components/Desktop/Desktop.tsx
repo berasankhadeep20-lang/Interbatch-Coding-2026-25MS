@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { AppId, WindowState } from '../../types'
 import { toggleMute, isMuted } from '../../utils/sounds'
+import { Particles } from './Particles'
 import './Desktop.css'
 
 interface DesktopIcon {
@@ -76,6 +77,7 @@ export function Desktop({ windows, onOpenWindow, onFocusWindow, onRestoreWindow 
 
   return (
     <div className="desktop" onContextMenu={handleRightClick}>
+      <Particles />
       <div className="scanlines" />
 
       <div className="desktop-icons">
