@@ -9,9 +9,8 @@ interface Props {
   onClose: (id: string) => void
   onFocus: (id: string) => void
   onMinimize: (id: string) => void
-  onMove: (id: string, pos: { x: number; y: number }) => void
+  onMove: (id: string, pos: { x: number; y: number; }) => void
 }
-
 export function AppWindow({ window: win, children, onClose, onFocus, onMinimize, onMove }: Props) {
   const dragStart = useRef<{ mx: number; my: number; wx: number; wy: number } | null>(null)
 const [isMaximized, setIsMaximized] = useState(false)
@@ -49,20 +48,20 @@ const prevSize = useRef({ position: { x: 0, y: 0 }, size: { width: 680, height: 
       wy: win.position.y,
     }
 
-    const onMove = (me: MouseEvent) => {
+    const onMouseMove = (me: MouseEvent) => {
       if (!dragStart.current) return
       const dx = me.clientX - dragStart.current.mx
       const dy = me.clientY - dragStart.current.my
       const newX = Math.max(0, dragStart.current.wx + dx)
       const newY = Math.max(0, dragStart.current.wy + dy)
-      onMove_window(win.id, { x: newX, y: newY })
+      onMove_window({ x: newX, y: newY })
     }
 
     // We need reference to the prop — using closure trick
-    function onMove_window(id: string, pos: { x: number; y: number }) {
+    function onMove_window(pos: { x: number; y: number }) {
       win.position.x = pos.x
       win.position.y = pos.y
-      const el = document.getElementById(`win-${id}`)
+      const el = document.getElementById(`win-${win.id}`)
       if (el) {
         el.style.left = pos.x + 'px'
         el.style.top = pos.y + 'px'
@@ -75,15 +74,15 @@ const prevSize = useRef({ position: { x: 0, y: 0 }, size: { width: 680, height: 
         if (el) {
           const left = parseInt(el.style.left) || win.position.x
           const top = parseInt(el.style.top) || win.position.y
-          onMove(win.id, { x: left, y: top })
+          onMove(win.id, { x: left, y: top } as any)
         }
       }
       dragStart.current = null
-      document.removeEventListener('mousemove', onMove)
+      document.removeEventListener('mousemove', onMouseMove)
       document.removeEventListener('mouseup', onUp)
     }
 
-    document.addEventListener('mousemove', onMove)
+    document.addEventListener('mousemove', onMouseMove)
     document.addEventListener('mouseup', onUp)
   }
 
