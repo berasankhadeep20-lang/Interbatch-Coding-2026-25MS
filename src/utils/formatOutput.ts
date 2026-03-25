@@ -45,5 +45,6 @@ export function formatSuccess(msg: string): string {
 }
 
 export function prompt(cwd: string): string {
-  return `${c.green}slashdot${c.reset}${c.gray}@${c.reset}${c.cyan}25ms-os${c.reset}${c.gray}:${c.reset}${c.yellow}${cwd}${c.reset}${c.white}$ ${c.reset}`
+  const col = (window as any).__slashdotTheme?.primary ?? c.green
+  return `${col}slashdot${c.reset}${c.gray}@${c.reset}${col}25ms-os${c.reset}${c.gray}:${c.reset}${c.yellow}${cwd}${c.reset}${c.white}$ ${c.reset}`
 }

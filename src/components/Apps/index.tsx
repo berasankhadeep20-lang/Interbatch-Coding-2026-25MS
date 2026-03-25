@@ -92,7 +92,7 @@ export function AboutApp() {
           <img src="/iiserkol_logo.png" alt="IISER Kolkata" className="logo-img" />
         </div>
         <div className="logo-placeholder">
-          <img src="/SlashDot_Main_logo_noBG_W-01-02.png" alt="SlashDot" className="logo-img" />
+          <img src="/slashdot_logo.png" alt="SlashDot" className="logo-img" />
         </div>
       </div>
     </div>
@@ -259,7 +259,7 @@ export function NeofetchApp() {
           <img src="/iiserkol_logo.png" alt="IISER Kolkata" className="logo-img" />
         </div>
         <div className="logo-placeholder">
-          <img src="/SlashDot_Main_logo_noBG_W-01-02.png" alt="SlashDot" className="logo-img" />
+          <img src="/slashdot_logo.png" alt="SlashDot" className="logo-img" />
         </div>
       </div>
     </div>

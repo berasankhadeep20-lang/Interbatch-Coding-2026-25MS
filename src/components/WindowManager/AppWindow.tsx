@@ -1,4 +1,4 @@
-import { useRef, ReactNode } from 'react'
+import { useRef, useState, ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { WindowState } from '../../types'
 import './WindowManager.css'
@@ -14,6 +14,30 @@ interface Props {
 
 export function AppWindow({ window: win, children, onClose, onFocus, onMinimize, onMove }: Props) {
   const dragStart = useRef<{ mx: number; my: number; wx: number; wy: number } | null>(null)
+const [isMaximized, setIsMaximized] = useState(false)
+const prevSize = useRef({ position: { x: 0, y: 0 }, size: { width: 680, height: 480 } })
+
+  function handleMaximize() {
+    const el = document.getElementById(`win-${win.id}`)
+    if (!el) return
+    if (!isMaximized) {
+      prevSize.current = {
+        position: { x: win.position.x, y: win.position.y },
+        size: { width: win.size.width, height: win.size.height },
+      }
+      el.style.left = '0px'
+      el.style.top = '0px'
+      el.style.width = '100vw'
+      el.style.height = 'calc(100vh - 36px)'
+      setIsMaximized(true)
+    } else {
+      el.style.left = prevSize.current.position.x + 'px'
+      el.style.top = prevSize.current.position.y + 'px'
+      el.style.width = prevSize.current.size.width + 'px'
+      el.style.height = prevSize.current.size.height + 'px'
+      setIsMaximized(false)
+    }
+  }
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest('.win-controls')) return
@@ -83,7 +107,7 @@ export function AppWindow({ window: win, children, onClose, onFocus, onMinimize,
       onClick={() => onFocus(win.id)}
     >
       {/* Title bar */}
-      <div className="win-titlebar" onMouseDown={handleMouseDown}>
+      <div className="win-titlebar" onMouseDown={handleMouseDown} onDoubleClick={handleMaximize}>
         <div className="win-controls">
           <button
             className="win-btn close"
@@ -95,7 +119,11 @@ export function AppWindow({ window: win, children, onClose, onFocus, onMinimize,
             onClick={(e) => { e.stopPropagation(); onMinimize(win.id) }}
             title="Minimize"
           />
-          <button className="win-btn maximize" title="Maximize" />
+          <button
+            className="win-btn maximize"
+            title={isMaximized ? 'Restore' : 'Maximize'}
+            onClick={function(e) { e.stopPropagation(); handleMaximize() }}
+          />
         </div>
         <span className="win-title">{win.title}</span>
         <div style={{ width: 52 }} />

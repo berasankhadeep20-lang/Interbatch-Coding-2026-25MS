@@ -29,6 +29,11 @@ input, textarea { cursor: text; }
   overflow: hidden;
 }
 
+@keyframes loadbar {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
 .window-layer {
   position: fixed;
   inset: 0;

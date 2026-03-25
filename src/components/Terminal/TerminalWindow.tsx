@@ -61,6 +61,25 @@ export function TerminalWindow({ onOpenWindow, onEasterEgg }: Props) {
     term.open(containerRef.current)
     fitAddon.fit()
 
+    // Listen for theme changes
+    const themeHandler = (e: Event) => {
+      const { name } = (e as CustomEvent).detail
+      const themeColors: Record<string, string> = {
+        green:  '#00ff46',
+        amber:  '#ffb000',
+        blue:   '#00b4ff',
+        red:    '#ff5050',
+        purple: '#b464ff',
+      }
+      const col = themeColors[name] ?? '#00ff46'
+      term.options.theme = {
+        ...term.options.theme,
+        cursor: col,
+        green:  col,
+      }
+    }
+    window.addEventListener('slashdot-theme', themeHandler)
+
     termRef.current = term
     fitAddonRef.current = fitAddon
 
@@ -186,7 +205,9 @@ export function TerminalWindow({ onOpenWindow, onEasterEgg }: Props) {
     return function() {
       ro.disconnect()
       term.dispose()
+      window.removeEventListener('slashdot-theme', themeHandler)
     }
+
   }, [onOpenWindow, onEasterEgg])
 
   return (

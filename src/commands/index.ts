@@ -25,7 +25,6 @@ export function parseAndRun(raw: string): CommandResult & { prompt: string } {
   const [cmd, ...args] = input.split(/\s+/)
   const key = cmd.toLowerCase()
 
-  // Handle 'open' with subcommand
   if (key === 'open' && appCommands['open']) {
     const result = appCommands['open'](args)
     return { ...result, prompt: prompt(getCwd()) }
@@ -36,7 +35,6 @@ export function parseAndRun(raw: string): CommandResult & { prompt: string } {
     return { ...result, prompt: prompt(getCwd()) }
   }
 
-  // Unknown command
   return {
     output: [
       `\r\n${c.red}${cmd}: command not found${c.reset}`,

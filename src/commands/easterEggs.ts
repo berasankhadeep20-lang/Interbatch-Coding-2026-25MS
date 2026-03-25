@@ -63,14 +63,255 @@ export const easterEggs: Record<string, CommandHandler> = {
     ].join('\r\n'),
   }),
 
+  clear: (): CommandResult => ({
+    output: '',
+    action: { type: 'clear' },
+  }),
+
+  // ── THEME ───────────────────────────────────────────────────────────────────
+  theme: (args: string[]): CommandResult => {
+    const name = args[0]?.toLowerCase()
+
+    const themes: Record<string, {
+      primary: string
+      secondary: string
+      bg: string
+      label: string
+    }> = {
+      green: {
+        primary:   '\x1b[38;2;0;255;70m',
+        secondary: '\x1b[38;2;0;200;100m',
+        bg:        '#00ff4610',
+        label:     'Terminal Green (default)',
+      },
+      amber: {
+        primary:   '\x1b[38;2;255;176;0m',
+        secondary: '\x1b[38;2;255;140;0m',
+        bg:        '#ffb00010',
+        label:     'Phosphor Amber',
+      },
+      blue: {
+        primary:   '\x1b[38;2;0;180;255m',
+        secondary: '\x1b[38;2;0;120;220m',
+        bg:        '#00b4ff10',
+        label:     'Cyan Blue',
+      },
+      red: {
+        primary:   '\x1b[38;2;255;80;80m',
+        secondary: '\x1b[38;2;220;50;50m',
+        bg:        '#ff505010',
+        label:     'Red Alert',
+      },
+      purple: {
+        primary:   '\x1b[38;2;180;100;255m',
+        secondary: '\x1b[38;2;140;70;220m',
+        bg:        '#b464ff10',
+        label:     'Purple Haze',
+      },
+    }
+
+    if (!name || !themes[name]) {
+      return {
+        output: [
+          '',
+          `${c.cyan}Available themes:${c.reset}`,
+          '',
+          ...Object.entries(themes).map(([key, t]) => {
+            const current = (window as any).__slashdotTheme?.name === key
+            return `  ${t.primary}${key.padEnd(10)}${c.reset}  ${c.gray}${t.label}${current ? `  ${c.green}← active${c.reset}` : ''}${c.reset}`
+          }),
+          '',
+          `${c.gray}Usage: theme <name>${c.reset}`,
+          `${c.gray}Example: theme amber${c.reset}`,
+          '',
+        ].join('\r\n'),
+      }
+    }
+
+    const t = themes[name]
+
+    // Store theme globally
+    ;(window as any).__slashdotTheme = { name, ...t }
+
+    // Update CSS variables on root
+    document.documentElement.style.setProperty('--terminal-primary', t.bg)
+
+    // Update xterm theme via custom event
+    window.dispatchEvent(new CustomEvent('slashdot-theme', { detail: { name, theme: t } }))
+
+    return {
+      output: [
+        '',
+        `${t.primary}✓ Theme changed to: ${t.label}${c.reset}`,
+        `${c.gray}Prompt and accent colors updated.${c.reset}`,
+        '',
+      ].join('\r\n'),
+    }
+  },
+
+  // ── SANDWICH ────────────────────────────────────────────────────────────────
+  'sudo make me a sandwich': (): CommandResult => ({
+    output: [
+      '',
+      `${c.green}✓ Okay.${c.reset}`,
+      '',
+      `${c.white}┌─────────────────────────────┐${c.reset}`,
+      `${c.white}│                             │${c.reset}`,
+      `${c.white}│   🥪  Your sandwich, sir.   │${c.reset}`,
+      `${c.white}│                             │${c.reset}`,
+      `${c.white}│   Bread    : Sourdough      │${c.reset}`,
+      `${c.white}│   Filling  : Bug-free code  │${c.reset}`,
+      `${c.white}│   Sauce    : Stack Overflow │${c.reset}`,
+      `${c.white}│   Side     : Fries (crispy) │${c.reset}`,
+      `${c.white}│   Drink    : Black coffee   │${c.reset}`,
+      `${c.white}│                             │${c.reset}`,
+      `${c.white}└─────────────────────────────┘${c.reset}`,
+      '',
+      `${c.gray}(xkcd.com/149 — because sudo makes it happen)${c.reset}`,
+      '',
+    ].join('\r\n'),
+  }),
+
+  // ── MAKE ME A CGPA ──────────────────────────────────────────────────────────
+  'sudo make me a cgpa': (): CommandResult => ({
+    output: [
+      '',
+      `${c.cyan}Connecting to academic server...${c.reset}`,
+      `${c.green}✓ Connected${c.reset}`,
+      '',
+      `${c.cyan}Overriding grade calculation algorithm...${c.reset}`,
+      `${c.green}✓ Override successful${c.reset}`,
+      '',
+      `${c.cyan}Injecting marks...${c.reset}`,
+      `${c.green}✓ Done${c.reset}`,
+      '',
+      `${c.white}┌─────────────────────────────────┐${c.reset}`,
+      `${c.white}│   🎓 CGPA Update — 25MS Batch   │${c.reset}`,
+      `${c.white}├─────────────────────────────────┤${c.reset}`,
+      `${c.white}│   Previous CGPA : ${c.red}¯\\_(ツ)_/¯${c.white}    │${c.reset}`,
+      `${c.white}│   New CGPA      : ${c.green}10.0 / 10.0${c.white} │${c.reset}`,
+      `${c.white}│   Status        : ${c.green}Dean's List${c.white}  │${c.reset}`,
+      `${c.white}│   Scholarship   : ${c.green}Full ride${c.white}    │${c.reset}`,
+      `${c.white}└─────────────────────────────────┘${c.reset}`,
+      '',
+      `${c.green}✓ CGPA updated successfully!${c.reset}`,
+      `${c.gray}(Still fake. Please attend your classes.)${c.reset}`,
+      '',
+    ].join('\r\n'),
+  }),
+
+  // ── TOP ─────────────────────────────────────────────────────────────────────
+
+  top: (): CommandResult => {
+    const uptime = Math.floor(Math.random() * 60) + 10
+    const processes = [
+      { pid: 1,    cpu: 0.0,  mem: 0.1,  cmd: 'init' },
+      { pid: 42,   cpu: 0.0,  mem: 0.2,  cmd: 'slashdot-kernel' },
+      { pid: 108,  cpu: 12.4, mem: 8.3,  cmd: 'browser-tabs (too many)' },
+      { pid: 204,  cpu: 8.1,  mem: 12.1, cmd: 'node_modules (growing)' },
+      { pid: 312,  cpu: 6.3,  mem: 4.2,  cmd: 'anxiety-daemon' },
+      { pid: 420,  cpu: 5.5,  mem: 3.1,  cmd: 'procrastination.exe' },
+      { pid: 512,  cpu: 4.2,  mem: 2.8,  cmd: 'vite-dev-server' },
+      { pid: 613,  cpu: 3.8,  mem: 6.4,  cmd: 'typescript-checker' },
+      { pid: 714,  cpu: 2.1,  mem: 1.2,  cmd: 'coffee-monitor' },
+      { pid: 815,  cpu: 1.9,  mem: 0.9,  cmd: 'deadline-reminder' },
+      { pid: 916,  cpu: 1.2,  mem: 0.7,  cmd: 'vim (never closes)' },
+      { pid: 1024, cpu: 0.8,  mem: 0.4,  cmd: 'slashdot-os-terminal' },
+      { pid: 1337, cpu: 0.4,  mem: 0.3,  cmd: 'ssh-iiserkol' },
+      { pid: 2048, cpu: 0.2,  mem: 0.2,  cmd: 'matrix-screensaver' },
+      { pid: 9999, cpu: 99.9, mem: 99.9, cmd: 'exam-stress (unkillable)' },
+    ]
+    const totalCpu = processes.reduce((a, p) => a + p.cpu, 0).toFixed(1)
+    const totalMem = processes.reduce((a, p) => a + p.mem, 0).toFixed(1)
+
+    return {
+      output: [
+        '',
+        `${c.green}SlashDot OS${c.reset} - top`,
+        `${c.white}Tasks: ${c.green}${processes.length} total${c.reset}  ${c.white}Uptime: ${uptime} min${c.reset}  ${c.white}Load avg: 4.20 3.14 2.71${c.reset}`,
+        `${c.white}CPU usage: ${c.yellow}${totalCpu}%${c.reset}  ${c.white}Mem usage: ${c.yellow}${totalMem}%${c.reset}  ${c.white}Swap: 0% (we don't do that here)${c.reset}`,
+        '',
+        `${c.cyan}${'PID'.padEnd(6)}${'CPU%'.padEnd(8)}${'MEM%'.padEnd(8)}COMMAND${c.reset}`,
+        `${c.gray}${'─'.repeat(52)}${c.reset}`,
+        ...processes.map(p => {
+          const cpuCol = p.cpu > 50 ? c.red : p.cpu > 10 ? c.yellow : c.white
+          const memCol = p.mem > 50 ? c.red : p.mem > 10 ? c.yellow : c.white
+          return `${c.gray}${String(p.pid).padEnd(6)}${c.reset}${cpuCol}${String(p.cpu).padEnd(8)}${c.reset}${memCol}${String(p.mem).padEnd(8)}${c.reset}${c.white}${p.cmd}${c.reset}`
+        }),
+        '',
+        `${c.gray}Press Ctrl+C to stop (just kidding, type 'clear' instead)${c.reset}`,
+        `${c.gray}PID 9999 cannot be killed. It never can.${c.reset}`,
+        '',
+      ].join('\r\n'),
+    }
+  },
+
+  // ── WEATHER ─────────────────────────────────────────────────────────────────
+
+  weather: (): CommandResult => {
+    const conditions = [
+      { icon: '☀', desc: 'Sunny', temp: 34, feel: 38, humidity: 65 },
+      { icon: '⛅', desc: 'Partly Cloudy', temp: 30, feel: 33, humidity: 72 },
+      { icon: '🌧', desc: 'Raining (again)', temp: 26, feel: 25, humidity: 95 },
+      { icon: '🌩', desc: 'Thunderstorm', temp: 24, feel: 23, humidity: 98 },
+      { icon: '🌫', desc: 'Foggy', temp: 22, feel: 21, humidity: 88 },
+      { icon: '🔥', desc: 'Extremely Hot', temp: 42, feel: 47, humidity: 60 },
+    ]
+    const w = conditions[Math.floor(Math.random() * conditions.length)]
+    const days = [
+      { day: 'Tomorrow', icon: '⛅', temp: 31 },
+      { day: 'Wednesday', icon: '🌧', temp: 27 },
+      { day: 'Thursday', icon: '☀', temp: 35 },
+      { day: 'Friday', icon: '🌩', temp: 25 },
+    ]
+    return {
+      output: [
+        '',
+        `${c.cyan}┌─────────────────────────────────────────────┐${c.reset}`,
+        `${c.cyan}│  Weather — IISER Kolkata Campus             │${c.reset}`,
+        `${c.cyan}│  Mohanpur, West Bengal, India               │${c.reset}`,
+        `${c.cyan}└─────────────────────────────────────────────┘${c.reset}`,
+        '',
+        `  ${w.icon}  ${c.yellow}${w.desc}${c.reset}`,
+        '',
+        `  ${c.white}Temperature   ${c.reset}${c.yellow}${w.temp}°C${c.reset}  ${c.gray}(feels like ${w.feel}°C)${c.reset}`,
+        `  ${c.white}Humidity      ${c.reset}${c.cyan}${w.humidity}%${c.reset}`,
+        `  ${c.white}Wind          ${c.reset}${c.white}12 km/h NE${c.reset}`,
+        `  ${c.white}Visibility    ${c.reset}${c.white}8 km${c.reset}`,
+        `  ${c.white}UV Index      ${c.reset}${c.red}Very High (protect your laptop)${c.reset}`,
+        '',
+        `  ${c.gray}── 4-Day Forecast ────────────────────────${c.reset}`,
+        '',
+        ...days.map(d =>
+          `  ${d.icon}  ${c.white}${d.day.padEnd(12)}${c.reset}  ${c.yellow}${d.temp}°C${c.reset}`
+        ),
+        '',
+        `  ${c.gray}── Campus Conditions ─────────────────────${c.reset}`,
+        '',
+        `  ${c.white}Canteen queue    ${c.reset}${c.red}Dangerously long${c.reset}`,
+        `  ${c.white}Library AC       ${c.reset}${c.green}Working (miracle)${c.reset}`,
+        `  ${c.white}Hostel WiFi      ${c.reset}${c.red}Down (as always)${c.reset}`,
+        `  ${c.white}Exam stress      ${c.reset}${c.red}Maximum${c.reset}`,
+        `  ${c.white}Coffee supply    ${c.reset}${c.yellow}Critical${c.reset}`,
+        '',
+        `  ${c.gray}Last updated: ${new Date().toLocaleTimeString()}${c.reset}`,
+        '',
+      ].join('\r\n'),
+    }
+  },
+
   sudo: (args: string[]): CommandResult => {
     if (args[0] === 'party') return easterEggs['sudo party']([])
     if (args[0] === 'rm')    return easterEggs['sudo rm -rf /']([])
     if (args[0] === 'apt')   return easterEggs['apt'](['install', ...args.slice(2)])
+    if (args.join(' ') === 'give me marks') return easterEggs['sudo give me marks']([])
+    if (args.join(' ') === 'make me a sandwich') return easterEggs['sudo make me a sandwich']([])
+    if (args.join(' ') === 'make me a cgpa') return easterEggs['sudo make me a cgpa']([])
     return {
       output: `\r\n${c.red}sudo: ${args.join(' ')}: command not allowed${c.reset}\r\n${c.gray}This incident will be reported.${c.reset}\r\n`,
     }
   },
+
 
   fortune: (): CommandResult => {
     const quotes = [
@@ -155,6 +396,82 @@ export const easterEggs: Record<string, CommandHandler> = {
 
   ':q!': (): CommandResult => ({
     output: `\r\n${c.red}Discarding changes...${c.reset}\r\n${c.yellow}Exiting vim...${c.reset}\r\n`,
+  }),
+
+  // ── SUDO GIVE ME MARKS ──────────────────────────────────────────────────────
+  'sudo give me marks': (): CommandResult => ({
+    output: [
+      '',
+      `${c.cyan}Connecting to IISER Kolkata Academic Server...${c.reset}`,
+      `${c.green}✓ Connected${c.reset}`,
+      '',
+      `${c.cyan}Authenticating as: slashdot-user${c.reset}`,
+      `${c.green}✓ Authentication successful${c.reset}`,
+      '',
+      `${c.cyan}Fetching grade records...${c.reset}`,
+      `${c.green}✓ Records found${c.reset}`,
+      '',
+      `${c.white}┌─────────────────────────────────────────┐${c.reset}`,
+      `${c.white}│         25MS Grade Report 2026          │${c.reset}`,
+      `${c.white}├──────────────────────┬──────────────────┤${c.reset}`,
+      `${c.white}│ Course               │ Grade            │${c.reset}`,
+      `${c.white}├──────────────────────┼──────────────────┤${c.reset}`,
+      `${c.white}│ Mathematics I        │ ${c.green}A+${c.white}               │${c.reset}`,
+      `${c.white}│ Physics I            │ ${c.green}A+${c.white}               │${c.reset}`,
+      `${c.white}│ Chemistry I          │ ${c.green}A+${c.white}               │${c.reset}`,
+      `${c.white}│ Biology I            │ ${c.green}A+${c.white}               │${c.reset}`,
+      `${c.white}│ CS Fundamentals      │ ${c.green}A+${c.white}               │${c.reset}`,
+      `${c.white}│ Web Dev Competition  │ ${c.green}A+ (obviously)${c.white}   │${c.reset}`,
+      `${c.white}├──────────────────────┼──────────────────┤${c.reset}`,
+      `${c.white}│ CGPA                 │ ${c.green}10.0 / 10.0${c.white}      │${c.reset}`,
+      `${c.white}└──────────────────────┴──────────────────┘${c.reset}`,
+      '',
+      `${c.green}✓ Grades updated successfully!${c.reset}`,
+      `${c.gray}(This is a fake OS. Please study for real exams.)${c.reset}`,
+      '',
+    ].join('\r\n'),
+  }),
+
+  // ── PROCRASTINATE ───────────────────────────────────────────────────────────
+  'procrastinate': (): CommandResult => ({
+    output: [
+      '',
+      `${c.cyan}Opening SlashTube...${c.reset}`,
+      `${c.gray}The video platform for people who should be studying${c.reset}`,
+      '',
+      `${c.white}┌─────────────────────────────────────────────────────┐${c.reset}`,
+      `${c.red}│  ▶ SlashTube                          🔴 LIVE       │${c.reset}`,
+      `${c.white}├─────────────────────────────────────────────────────┤${c.reset}`,
+      `${c.white}│                                                     │${c.reset}`,
+      `${c.white}│  🎬 Recommended for you:                            │${c.reset}`,
+      `${c.white}│                                                     │${c.reset}`,
+      `${c.yellow}│  ► "How to study effectively" — 2.3M views         │${c.reset}`,
+      `${c.gray}│    Watched: 0% ████░░░░░░░░░░░░░░░░░░ 0:00/45:32   │${c.reset}`,
+      `${c.white}│                                                     │${c.reset}`,
+      `${c.yellow}│  ► "Top 10 VS Code extensions" — 890K views        │${c.reset}`,
+      `${c.gray}│    Watched: 73% ████████████████░░░░░ 33:21/45:10  │${c.reset}`,
+      `${c.white}│                                                     │${c.reset}`,
+      `${c.yellow}│  ► "I coded for 24 hours straight" — 5.1M views    │${c.reset}`,
+      `${c.gray}│    Watched: 100% ████████████████████ completed     │${c.reset}`,
+      `${c.white}│                                                     │${c.reset}`,
+      `${c.yellow}│  ► "Why you can't focus" — 12M views               │${c.reset}`,
+      `${c.gray}│    Watched: 45% ████████░░░░░░░░░░░░ 18:02/40:15   │${c.reset}`,
+      `${c.white}│                                                     │${c.reset}`,
+      `${c.yellow}│  ► "Minecraft but every block is an exam" — 3M     │${c.reset}`,
+      `${c.gray}│    Watched: 12% ██░░░░░░░░░░░░░░░░░░ 4:22/36:00   │${c.reset}`,
+      `${c.white}│                                                     │${c.reset}`,
+      `${c.white}│  ── Your subscriptions ─────────────────────────   │${c.reset}`,
+      `${c.cyan}│  • Lo-fi hip hop radio — beats to study/relax to   │${c.reset}`,
+      `${c.cyan}│  • Fireship                                         │${c.reset}`,
+      `${c.cyan}│  • 3Blue1Brown                                      │${c.reset}`,
+      `${c.cyan}│  • ThePrimeagen                                     │${c.reset}`,
+      `${c.white}│                                                     │${c.reset}`,
+      `${c.white}└─────────────────────────────────────────────────────┘${c.reset}`,
+      '',
+      `${c.red}⚠ Warning: ${c.reset}${c.white}You have ${c.yellow}3 assignments${c.reset}${c.white} due tomorrow.${c.reset}`,
+      `${c.gray}Type 'clear' to pretend this never happened.${c.reset}`,
+      '',
+    ].join('\r\n'),
   }),
 
   // ── APT ─────────────────────────────────────────────────────────────────────

@@ -4,11 +4,29 @@
   background: #050505;
   position: relative;
   overflow: hidden;
-  /* Subtle grid pattern */
   background-image:
-    linear-gradient(rgba(0,255,70,0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,255,70,0.02) 1px, transparent 1px);
-  background-size: 40px 40px;
+    radial-gradient(ellipse at 20% 50%, rgba(0,255,70,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(0,200,255,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 80%, rgba(180,100,255,0.03) 0%, transparent 50%),
+    linear-gradient(rgba(0,255,70,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,70,0.015) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+}
+
+.desktop::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(0,255,70,0.03) 0%, transparent 70%);
+  animation: desktop-pulse 8s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes desktop-pulse {
+  from { opacity: 0.4; transform: scale(1); }
+  to   { opacity: 1; transform: scale(1.05); }
 }
 
 /* CRT scanline effect */
