@@ -36,10 +36,11 @@ function TypedAscii() {
 export function BootScreen({ onDone }: Props) {
   const { phase, visibleLines } = useBootSequence()
 
-  if (phase === 'done') {
-    onDone()
-    return null
-  }
+  useEffect(() => {
+    if (phase === 'done') onDone()
+  }, [phase, onDone])
+
+  if (phase === 'done') return null
 
   if (phase === 'bios') {
     return (

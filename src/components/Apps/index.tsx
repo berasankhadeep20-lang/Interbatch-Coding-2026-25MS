@@ -283,7 +283,7 @@ export function ClockApp() {
   const progress = (time.getSeconds() / 60) * 100
 
   return (
-    <div className="app-body clock-app">
+    <div className="app-body clock-app" style={{ background: '#0a0a0a', color: '#d0d0d0' }}>
       <p className="app-label cyan">// clock.app</p>
       <div className="clock-display">
         <span className="clock-hours">{hours}</span>

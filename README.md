@@ -42,6 +42,7 @@ SlashDot OS turns the SlashDot club website into a fake operating system running
 help              → all commands
 ls / cd / cat     → navigate virtual filesystem
 neofetch          → system info + logos
+open clock        → live clock app with unix time
 whoami            → user info
 uname -a          → OS info
 date              → current date/time

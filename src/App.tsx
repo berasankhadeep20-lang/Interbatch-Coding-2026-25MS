@@ -8,8 +8,8 @@ import { Confetti, MatrixRain } from './components/Desktop/EasterEggs'
 import { KernelPanic } from './components/Apps/KernelPanic'
 import {
   HomeApp, AboutApp, TeamApp,
-  TechStackApp, ContactApp, NeofetchApp,
-} from './components/Apps'
+  TechStackApp, ContactApp, NeofetchApp, ClockApp,
+} from './components/Apps/index'
 import { useWindowManager } from './hooks/useWindowManager'
 import { AppId } from './types'
 import './App.css'
