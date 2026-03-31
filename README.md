@@ -183,6 +183,7 @@ yes                            → spams yes
 banner <text>                  → big ASCII banner
 echo <text>                    → prints text
 sudo give me a cgpa            → perfect 10.0 CGPA
+clippy                         → summon Clippy the assistant
 ```
 
 ## Keyboard Shortcuts

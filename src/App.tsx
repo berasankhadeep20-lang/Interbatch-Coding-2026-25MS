@@ -8,6 +8,7 @@ import { Confetti, MatrixRain } from './components/Desktop/EasterEggs'
 import { KernelPanic } from './components/Apps/KernelPanic'
 import { NotificationSystem } from './components/Desktop/NotificationSystem'
 import { CommandPalette } from './components/Desktop/CommandPalette'
+import { Clippy } from './components/Desktop/Clippy'
 import {
   HomeApp, AboutApp, TeamApp,
   TechStackApp, ContactApp, NeofetchApp, ClockApp,
@@ -326,6 +327,7 @@ export default function App() {
       )}
       <NotificationSystem />
       <CommandPalette onOpenWindow={handleOpenWindow} onRunCommand={handleRunCommand} />
+      <Clippy />
     </div>
   )
 }

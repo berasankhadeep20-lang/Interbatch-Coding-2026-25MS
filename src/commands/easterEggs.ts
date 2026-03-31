@@ -671,6 +671,13 @@ export const easterEggs: Record<string, CommandHandler> = {
     ].join('\r\n'),
   }),
 
+  clippy: (): CommandResult => {
+    window.dispatchEvent(new CustomEvent('slashdot-clippy', {
+      detail: { text: "It looks like you summoned me! How can I help? Try 'help' to see all commands." }
+    }))
+    return { output: `\r\n${c.yellow}📎 Clippy has appeared!${c.reset}\r\n` }
+  },
+
   'sudo chmod 777 life': (): CommandResult => ({
     output: [
       '',

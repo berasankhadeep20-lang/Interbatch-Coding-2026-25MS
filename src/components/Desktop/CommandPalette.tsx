@@ -37,6 +37,7 @@ const ALL_COMMANDS = [
   { label: 'Rain Off',           action: 'cmd:rain off',     icon: '☀'  },
   { label: 'Live Weather',       action: 'cmd:weather',      icon: '🌍' },
   { label: 'Visitor Counter',    action: 'cmd:visits',       icon: '👥' },
+  { label: 'Summon Clippy',      action: 'cmd:clippy',       icon: '📎' },
   { label: 'Change Theme Green', action: 'cmd:theme green',  icon: '🟢' },
   { label: 'Change Theme Amber', action: 'cmd:theme amber',  icon: '🟡' },
   { label: 'Change Theme Blue',  action: 'cmd:theme blue',   icon: '🔵' },
