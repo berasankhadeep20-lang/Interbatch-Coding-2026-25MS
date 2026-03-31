@@ -26,11 +26,17 @@ const ALL_COMMANDS = [
   { label: 'Open Poll',          action: 'open:poll',        icon: '📊' },
   { label: 'Open Jokes',         action: 'open:jokes',       icon: '😂' },
   { label: 'Open SlashDot AI',   action: 'open:slashdotai',  icon: '🤖' },
-  { label: 'Open Achievements',  action: 'open:achievements', icon: '🏆'},
+  { label: 'Open Achievements',  action: 'open:achievements', icon: '🏆' },
+  { label: 'Open Flappy Bracket',action: 'open:flappy',       icon: '{}' },
+  { label: 'Open Dungeon',       action: 'open:dungeon',      icon: '⚔'  },
   { label: 'Sudo Party 🎉',      action: 'cmd:sudo party',   icon: '🎉' },
   { label: 'Matrix Rain',        action: 'cmd:matrix',       icon: '🟩' },
   { label: 'Neofetch',           action: 'cmd:neofetch',     icon: '🖥' },
   { label: 'Toggle Fullscreen',  action: 'cmd:fullscreen',   icon: '⛶'  },
+  { label: 'Rain On',            action: 'cmd:rain on',      icon: '🌧' },
+  { label: 'Rain Off',           action: 'cmd:rain off',     icon: '☀'  },
+  { label: 'Live Weather',       action: 'cmd:weather',      icon: '🌍' },
+  { label: 'Visitor Counter',    action: 'cmd:visits',       icon: '👥' },
   { label: 'Change Theme Green', action: 'cmd:theme green',  icon: '🟢' },
   { label: 'Change Theme Amber', action: 'cmd:theme amber',  icon: '🟡' },
   { label: 'Change Theme Blue',  action: 'cmd:theme blue',   icon: '🔵' },
@@ -86,7 +92,8 @@ export function CommandPalette({ onOpenWindow, onRunCommand }: Props) {
         'matrix-calc': 'matrix.app', gameoflife: 'life.exe',
         typing: 'typing.exe', guestbook: 'guestbook.app',
         poll: 'poll.app', jokes: 'jokes.app', slashdotai: 'slashdot-ai.app',
-        achievements: 'achievements.app',
+        achievements: 'achievements.app', flappy: 'flappy.exe',
+        dungeon: 'dungeon.exe',
       }
       onOpenWindow(appId, titleMap[appId] ?? appId)
     } else if (action.startsWith('cmd:')) {
