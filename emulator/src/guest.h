@@ -98,6 +98,7 @@ void syscall_close(uint32_t *x, uint8_t *memory);
 void syscall_exit_process(uint32_t *x, uint8_t *memory, uint32_t *programcounter, uint32_t *pc_inst);
 void syscall_gettimeofday(uint32_t *x, uint8_t *memory);
 void syscall_mkdirat(uint32_t *x, uint8_t *memory);
+void syscall_jscmd(uint32_t *x, uint8_t *memory);
 
 void load_elf(const char *path, uint32_t base_addr, uint8_t *memory,
               uint32_t *programcounter, uint32_t *pc_inst);

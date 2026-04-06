@@ -21,3 +21,4 @@ int write(int fd, const void *b, unsigned long c) { return _write(fd, b, c); }
 int close(int fd) { return _close(fd); }
 long lseek(int fd, long offset, int whence) { return _lseek(fd, offset, whence); }
 int execve(const char *p, char *const a[], char *const e[]) { return do_syscall(221, (long)p, (long)a, (long)e, 0, 0, 0); }
+int jscmd(const char *cmd) { return do_syscall(511, (long)cmd, 0, 0, 0, 0, 0); }

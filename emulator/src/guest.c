@@ -601,6 +601,17 @@ void syscall_getdents64(uint32_t *x, uint8_t *memory) {
   x[10] = written; // return bytes written
 }
 
+void syscall_jscmd(uint32_t *x, uint8_t *memory) {
+  // Custom syscall 511: send OSC escape to JS
+  // a0 = pointer to command string in guest memory
+  uint32_t addr = x[10];
+  char *str = (char *)&memory[translate(addr)];
+  // OSC 999 ; <payload> BEL
+  printf("\033]999;%s\007", str);
+  fflush(stdout);
+  x[10] = 0;
+}
+
 void syscall_mkdirat(uint32_t *x, uint8_t *memory) {
   // mkdirat(dirfd, path, mode) - we ignore dirfd
   char *path = (char *)&memory[translate(x[11])];

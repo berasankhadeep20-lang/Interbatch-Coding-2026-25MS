@@ -1,1 +1,39 @@
-cd /home/a/Interbatch-Coding-2026-25MS/emulator && export PATH=/opt/riscv/bin:$PATH:/usr/lib/emscripten && riscv32-unknown-elf-gcc -O2 -c syscall_stubs.c -o syscall_stubs.o && riscv32-unknown-elf-gcc -O2 -c syscalls.c -o syscalls.o && riscv32-unknown-elf-gcc -O2 shell.c syscall_stubs.o syscalls.o -o initramfs/elf && riscv32-unknown-elf-gcc -O2 ls.c syscall_stubs.o syscalls.o -o initramfs/ls && riscv32-unknown-elf-gcc -O2 cat.c syscall_stubs.o syscalls.o -o initramfs/cat && riscv32-unknown-elf-gcc -O2 echo.c syscall_stubs.o syscalls.o -o initramfs/echo && riscv32-unknown-elf-gcc -O2 mkdir.c syscall_stubs.o syscalls.o -o initramfs/mkdir && riscv32-unknown-elf-gcc -O2 tree.c syscall_stubs.o syscalls.o -o initramfs/tree && riscv32-unknown-elf-gcc -O2 cowsay.c syscall_stubs.o syscalls.o -o initramfs/cowsay && cd initramfs && rm -f ../../public/initramfs.zip && zip -r ../../public/initramfs.zip . && cd .. && make clean all && cp emulator.js ../src/emulator-module/ && cp emulator.wasm ../public/os/
+#!/bin/bash
+set -e
+cd /home/a/Interbatch-Coding-2026-25MS/emulator
+export PATH=/opt/riscv/bin:$PATH:/usr/lib/emscripten
+
+CC="riscv32-unknown-elf-gcc -O2"
+STUBS="syscall_stubs.o syscalls.o"
+
+# Compile stubs
+$CC -c syscall_stubs.c -o syscall_stubs.o
+$CC -c syscalls.c -o syscalls.o
+
+# Core commands
+$CC shell.c $STUBS -o initramfs/elf
+$CC ls.c $STUBS -o initramfs/ls
+$CC cat.c $STUBS -o initramfs/cat
+$CC echo.c $STUBS -o initramfs/echo
+$CC mkdir.c $STUBS -o initramfs/mkdir
+$CC tree.c $STUBS -o initramfs/tree
+$CC cowsay.c $STUBS -o initramfs/cowsay
+
+# New commands
+$CC open.c $STUBS -o initramfs/open
+$CC neofetch.c $STUBS -o initramfs/neofetch
+$CC fortune.c $STUBS -o initramfs/fortune
+$CC banner.c $STUBS -o initramfs/banner
+$CC weather.c $STUBS -o initramfs/weather
+$CC sl.c $STUBS -o initramfs/sl
+
+# Pack initramfs
+cd initramfs
+rm -f ../../public/initramfs.zip
+zip -r ../../public/initramfs.zip .
+cd ..
+
+# Build WASM emulator
+make clean all
+cp emulator.js ../src/emulator-module/
+cp emulator.wasm ../public/os/

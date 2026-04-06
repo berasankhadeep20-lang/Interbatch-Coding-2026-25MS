@@ -58,18 +58,29 @@ int main() {
       }
     } else if (strcmp(argv[0], "help") == 0) {
       printf("Built-in commands:\n");
-      printf("  cd [dir]   - change directory (supports ..)\n");
-      printf("  pwd        - print working directory\n");
-      printf("  clear      - clear screen\n");
-      printf("  help       - show this help\n");
-      printf("  exit       - exit shell\n");
+      printf("  cd [dir]     - change directory (supports ..)\n");
+      printf("  pwd          - print working directory\n");
+      printf("  clear        - clear screen\n");
+      printf("  help         - show this help\n");
+      printf("  exit         - exit shell\n");
       printf("\nExternal commands:\n");
-      printf("  ls [dir]   - list directory contents\n");
-      printf("  cat <file> - print file contents\n");
-      printf("  echo <msg> - print a message\n");
-      printf("  tree [dir] - show directory tree\n");
-      printf("  mkdir <d>  - create a directory\n");
-      printf("  cowsay <m> - moo\n");
+      printf("  ls [dir]     - list directory contents\n");
+      printf("  cat <file>   - print file contents\n");
+      printf("  echo <msg>   - print a message\n");
+      printf("  tree [dir]   - show directory tree\n");
+      printf("  mkdir <d>    - create a directory\n");
+      printf("  cowsay <m>   - moo\n");
+      printf("\nApps (via 'open <name>'):\n");
+      printf("  home about team stack contact neofetch\n");
+      printf("  asteroids pong periodic fourier gravity\n");
+      printf("  dna grapher physics molecular gameoflife\n");
+      printf("  typing flappy matrix-calc slashdotai\n");
+      printf("\nFun commands:\n");
+      printf("  neofetch     - system info + ASCII art\n");
+      printf("  fortune      - random programming quote\n");
+      printf("  banner <txt> - big ASCII text\n");
+      printf("  weather      - campus weather report\n");
+      printf("  sl           - steam locomotive\n");
     } else if (strcmp(argv[0], "pwd") == 0) {
       printf("%s\n", pwd);
     } else if (strcmp(argv[0], "clear") == 0) {

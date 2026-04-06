@@ -35,6 +35,10 @@ const ICONS: DesktopIcon[] = [
   { appId: 'molecular', title: 'molecular.app', label: 'Molecular', icon: '🧪' },
   { appId: 'grapher', title: 'grapher.app', label: 'Grapher', icon: '📈' },
   { appId: 'gameoflife', title: 'life.exe', label: 'Game of Life', icon: '🧬' },
+  { appId: 'guestbook', title: 'guestbook.app', label: 'Guestbook', icon: '📖' },
+  { appId: 'poll', title: 'poll.app', label: 'Poll', icon: '📊' },
+  { appId: 'jokes', title: 'jokes.app', label: 'Jokes', icon: '😂' },
+  { appId: 'achievements', title: 'achievements.app', label: 'Achievements', icon: '🏆' },
 ]
 
 export function createDesktop() {

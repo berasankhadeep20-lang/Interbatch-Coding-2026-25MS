@@ -142,11 +142,55 @@ export function createTerminalWindow() {
               Module.FS.writeFile('/initramfs/' + filename, data)
             }
 
+            // OSC 999 interception: C programs can trigger JS actions
+            let oscBuf = ''
+            let inOsc = false
+
             const charOut = (charCode: number) => {
+              const ch = String.fromCharCode(charCode)
+
+              if (inOsc) {
+                if (charCode === 7 || charCode === 0x9c) { // BEL or ST
+                  // Dispatch the OSC payload
+                  if (oscBuf.startsWith('999;')) {
+                    const payload = oscBuf.slice(4)
+                    window.dispatchEvent(new CustomEvent('slashdot-jscmd', { detail: payload }))
+                  }
+                  oscBuf = ''
+                  inOsc = false
+                } else {
+                  oscBuf += ch
+                }
+                return
+              }
+
+              if (charCode === 0x1b) {
+                // Peek: could be start of OSC (\x1b])
+                // We'll set a flag and check next char
+                oscBuf = '\x1b'
+                inOsc = false
+                // Use a micro-state to check next char
+                const origCharOut = charOut;
+                // Actually, simpler: just set a 1-char lookahead
+                return
+              }
+
+              if (oscBuf === '\x1b' && ch === ']') {
+                inOsc = true
+                oscBuf = ''
+                return
+              }
+
+              // If we had a stale \x1b that wasn't followed by ], flush it
+              if (oscBuf === '\x1b') {
+                term.write('\x1b')
+                oscBuf = ''
+              }
+
               if (charCode === 10) {
                 term.write('\r\n')
               } else if (charCode !== 0) {
-                term.write(String.fromCharCode(charCode))
+                term.write(ch)
               }
             }
             Module.FS.init(null, charOut, charOut)

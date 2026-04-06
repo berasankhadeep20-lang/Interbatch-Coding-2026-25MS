@@ -510,6 +510,10 @@ void env(uint32_t instr) {
       syscall_mkdirat(x, memory);
       break;
     }
+    case 511: { // jscmd - custom JS command dispatch
+      syscall_jscmd(x, memory);
+      break;
+    }
     default: {
       printf("Unknown syscall %u\n", syscall);
       x[10] = -1;
