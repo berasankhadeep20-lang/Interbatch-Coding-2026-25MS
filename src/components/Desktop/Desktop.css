@@ -5,11 +5,11 @@
   position: relative;
   overflow: hidden;
   background-image:
-    radial-gradient(ellipse at 20% 50%, rgba(0,255,70,0.04) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 20%, rgba(0,200,255,0.04) 0%, transparent 50%),
-    radial-gradient(ellipse at 60% 80%, rgba(180,100,255,0.03) 0%, transparent 50%),
-    linear-gradient(rgba(0,255,70,0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,255,70,0.015) 1px, transparent 1px);
+    radial-gradient(ellipse at 20% 50%, rgba(0, 255, 70, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(0, 200, 255, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 80%, rgba(180, 100, 255, 0.03) 0%, transparent 50%),
+    linear-gradient(rgba(0, 255, 70, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 70, 0.015) 1px, transparent 1px);
   background-size: 100% 100%, 100% 100%, 100% 100%, 32px 32px, 32px 32px;
 }
 
@@ -18,41 +18,52 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 50% 50%, rgba(0,255,70,0.03) 0%, transparent 70%);
+    radial-gradient(ellipse at 50% 50%, rgba(0, 255, 70, 0.03) 0%, transparent 70%);
   animation: desktop-pulse 8s ease-in-out infinite alternate;
   pointer-events: none;
   z-index: 0;
 }
 
 @keyframes desktop-pulse {
-  from { opacity: 0.4; transform: scale(1); }
-  to   { opacity: 1; transform: scale(1.05); }
+  from {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.05);
+  }
 }
 
 /* CRT scanline effect */
 .scanlines {
   position: fixed;
   inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0,0,0,0.08) 2px,
-    rgba(0,0,0,0.08) 4px
-  );
+  background: repeating-linear-gradient(0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.08) 2px,
+      rgba(0, 0, 0, 0.08) 4px);
   pointer-events: none;
   z-index: 9000;
 }
 
 /* Desktop icons column on the left */
-.desktop-icons-layer {
-  position: fixed;
-  inset: 0;
+.desktop-icons {
+  position: absolute;
+  top: 40px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 12px;
+  height: calc(100vh - 100px);
+  z-index: 10;
   pointer-events: none;
-  z-index: 1;
 }
 
-.desktop-icons-layer .desktop-icon {
+.desktop-icons .desktop-icon {
   pointer-events: all;
 }
 
@@ -74,12 +85,12 @@
 }
 
 .desktop-icon:hover {
-  background: rgba(0,255,70,0.05);
-  border-color: rgba(0,255,70,0.2);
+  background: rgba(0, 255, 70, 0.05);
+  border-color: rgba(0, 255, 70, 0.2);
 }
 
 .desktop-icon:active {
-  background: rgba(0,255,70,0.1);
+  background: rgba(0, 255, 70, 0.1);
 }
 
 .desktop-icon-glyph {
@@ -112,7 +123,9 @@
   backdrop-filter: blur(8px);
 }
 
-.taskbar-left { flex-shrink: 0; }
+.taskbar-left {
+  flex-shrink: 0;
+}
 
 .taskbar-logo {
   display: flex;
@@ -170,7 +183,10 @@
   text-overflow: ellipsis;
 }
 
-.taskbar-item:hover { border-color: #333; color: #bbb; }
+.taskbar-item:hover {
+  border-color: #333;
+  color: #bbb;
+}
 
 .taskbar-item.active {
   background: #111;
@@ -202,6 +218,7 @@
   font-size: 10px;
   color: #555;
 }
+
 .context-menu {
   position: fixed;
   z-index: 9000;
@@ -210,14 +227,21 @@
   border-radius: 8px;
   padding: 4px 0;
   min-width: 200px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
   font-family: 'JetBrains Mono', monospace;
   animation: context-appear 0.08s ease-out;
 }
 
 @keyframes context-appear {
-  from { opacity: 0; transform: scale(0.95); }
-  to   { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .context-menu-header {
@@ -251,7 +275,7 @@
 }
 
 .context-item:hover {
-  background: rgba(0,255,70,0.08);
+  background: rgba(0, 255, 70, 0.08);
   color: #fff;
 }
 
@@ -272,6 +296,7 @@
   text-align: center;
   flex-shrink: 0;
 }
+
 .mute-btn {
   background: transparent;
   border: 1px solid transparent;

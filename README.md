@@ -19,9 +19,10 @@ SlashDot OS turns the SlashDot club website into a fake operating system running
 
 ### OS Core
 - Full terminal emulator with command history, tab-complete, Ctrl+C, Ctrl+L
-- Draggable, stackable, maximizable app windows
-- Boot sequence with BIOS screen and animated ASCII art
-- Virtual filesystem — `ls`, `cd`, `cat`, `pwd` all work
+- Execute standard C binaries (RV32IMAF) directly in-browser.
+- `initramfs` loaded via WASM, supporting `ls`, `cat`, `mkdir`, and `top`.
+- Draggable, stackable, maximizable app windows using a custom DOM factory.
+- Boot sequence with BIOS screen and animated ASCII art (WIP).
 - Live clock in taskbar
 - Right-click context menu on desktop
 - Draggable desktop icons — 25+ icons in a clean grid
@@ -203,14 +204,14 @@ Double-click titlebar → Maximize/restore window
 
 | Tool | Purpose |
 |------|---------|
-| React 18 + TypeScript | UI framework |
-| Vite 5 | Build tool |
-| xterm.js 5.5 | Terminal emulator |
-| Framer Motion 11 | Window animations |
-| Web Audio API | Sound effects |
-| Canvas API | Games + visualizers |
-| GitHub Actions | CI/CD |
-| GitHub Pages | Deployment |
+| Vanilla TypeScript | High-performance core logic |
+| Vite 5 | Build tool & Dev server |
+| xterm.js 5.5 | High-fidelity terminal emulator |
+| Emscripten | RISC-V core cross-compilation (WASM) |
+| Web Audio API | Low-latency sound effects |
+| Canvas API | Graphics-intensive games & visualizers |
+| GitHub Actions | Automated CI/CD deployment |
+| GitHub Pages | Global static hosting |
 
 ---
 
@@ -230,21 +231,21 @@ Open http://localhost:5173 in your browser. No backend required — pure static 
 ```
 slashdot-os/
 ├── public/
-│   ├── iiserkol_logo.png
+│   ├── os/                ← Compiled RISC-V WASM core
+│   ├── initramfs.zip      ← Virtual disk with ELF binaries
 │   └── slashdot_logo.png
 ├── src/
 │   ├── components/
-│   │   ├── Boot/              ← Boot sequence + animated ASCII
-│   │   ├── Desktop/           ← Desktop, taskbar, particles, notifications
-│   │   ├── Terminal/          ← xterm.js terminal
-│   │   ├── WindowManager/     ← Draggable windows
-│   │   └── Apps/              ← All 23 apps
-│   ├── commands/              ← All terminal commands + easter eggs
-│   ├── data/                  ← Team, tech stack, filesystem data
-│   ├── hooks/                 ← useWindowManager, useBootSequence
-│   ├── types/                 ← TypeScript types
-│   └── utils/                 ← ASCII art, formatting, sounds, achievements
-├── .github/workflows/         ← GitHub Actions CI/CD
+│   │   ├── Desktop/       ← Desktop icons, taskbar, clippy
+│   │   ├── Terminal/      ← xterm.js + WASM input handling
+│   │   ├── WindowManager/ ← Custom draggable window system
+│   │   └── Apps/          ← JS apps
+│   ├── framework/         ← framework
+│   ├── emulator-module/   ← Emulator JS loader hooks
+│   ├── data/              ← Static team & tech data
+│   ├── types/             ← Shared TypeScript definitions
+│   └── utils/             ← Core logic (sounds, formatting)
+├── emulator/              ← C source for the RISC-V core
 └── README.md
 ```
 
@@ -255,6 +256,7 @@ slashdot-os/
 | Name | Role | Batch | Email |
 |------|------|-------|-------|
 | Sankhadeep Bera | Lead Developer | 25MS | sb25ms227@iiserkol.ac.in |
+| S. Bari | Lead Developer | 25MS | shayan.bari.0001@gmail.com |
 
 ---
 
@@ -280,7 +282,7 @@ npm run build
 
 ## License
 
-MIT — see [LICENSE](./LICENSE)
+GNU GPLv3 — see [LICENSE](./LICENSE)
 
 ---
 
