@@ -13,7 +13,7 @@ int main() {
   char pwd[256] = "/";
 
   while (1) {
-    printf("%s\\> ", pwd);
+    printf("%s$ ", pwd);
     if (!fgets(cmd, sizeof(cmd), stdin)) {
       break;
     }
